@@ -1,4 +1,6 @@
-package com.feng.demo.javafeatures.java8;
+package com.feng.demo.javafeatures.java8.lambda;
+
+import com.feng.demo.javafeatures.java8.lambda.LambdaDemo;
 
 import junit.framework.TestCase;
 
@@ -24,5 +26,22 @@ public class LambdaDemoTest extends TestCase
 		assertEquals("google", result[2]);
 		assertEquals("alibaba", result[3]);
 	}
-
+	public void testCountStringLength()
+	{
+		assertEquals(22,lambda.countStringLength());
+	}
+	public void testGetLongestWord()
+	{
+		assertEquals("alibaba",lambda.getLongestWord());
+	}
+	
+	public void testGetShortestWord()
+	{
+		assertEquals("boco",lambda.getShortestWord());
+	}
+	
+	public void testGetFirstOfArray()
+	{
+		assertEquals("alibaba",lambda.getFirstOfArray());
+	}
 }
