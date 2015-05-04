@@ -24,7 +24,7 @@ public class StreamDemo
 	
 	public String[] changeFirstTwoWordToLowerCase(String[] words)
 	{
-		return Arrays.stream(words, 0, 1).map(String::toLowerCase).toArray(String[]::new);
+		return Arrays.stream(words, 0, 2).map(String::toLowerCase).toArray(String[]::new);
 	}
 	
 	public long getNinetyNine()
