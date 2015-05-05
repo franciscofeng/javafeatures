@@ -2,6 +2,7 @@ package com.feng.demo.javafeatures.java8.stream;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -48,5 +49,25 @@ public class StreamDemo
 	public List<String> getFirstTwoWords(String[] words)
 	{
 		return Arrays.asList(words).stream().limit(2).peek(System.out :: println).collect(Collectors.toList());
+	}
+	
+	public int sum(Integer[] nums)
+	{
+		Optional<Integer> optional = Arrays.stream(nums).reduce(Integer::sum);
+		if(optional.isPresent())
+		{
+			return optional.get();
+		}
+		return 0;
+	}
+	
+	public Map<String,Integer> getWordLength(String[] words)
+	{
+		return Arrays.stream(words).collect(Collectors.toMap((String w) -> w,(String w) -> w.length()));
+	}
+	
+	public Map<Integer,List<String>> groupWordsByLength(String[] words)
+	{
+		return Arrays.stream(words).collect(Collectors.groupingBy(String::length));
 	}
 }
