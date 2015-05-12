@@ -50,5 +50,15 @@ public class DateTimeDemoTest extends TestCase
 	{
 		assertEquals(1, demo.getHoursBetweenTokyoAndLocal());
 	}
+	
+	public void testGetFirstSunday()
+	{
+		assertEquals(3, demo.getFirstSunday(2015, 5));
+	}
+	
+	public void testGetFirstDayOfWeek()
+	{
+		assertEquals(5, demo.getFirstDayOfWeek(2015, 5));
+	}
 
 }

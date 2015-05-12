@@ -1,5 +1,6 @@
 package com.feng.demo.javafeatures.java8.newdatetime;
 
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -8,6 +9,7 @@ import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
 public class DateTimeDemo
 {
@@ -74,6 +76,18 @@ public class DateTimeDemo
 				local.getMinute(), local.getSecond(), local.getNano(), ZoneId.of("Asia/Tokyo"));
 		Duration d = Duration.between(tokyo, local);
 		return d.getSeconds()/3600;
+	}
+	
+	public int getFirstSunday(int year,int month)
+	{
+		LocalDate date = LocalDate.of(year, month, 1).with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+		return date.getDayOfMonth();
+	}
+	
+	public int getFirstDayOfWeek(int year,int month)
+	{
+		LocalDate date = LocalDate.of(year, month, 1).with(TemporalAdjusters.firstDayOfMonth());
+		return date.getDayOfWeek().getValue();
 	}
 	
 	public static void main(String[] args)
