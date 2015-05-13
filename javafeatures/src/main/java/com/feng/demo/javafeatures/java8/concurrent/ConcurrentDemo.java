@@ -1,10 +1,11 @@
 package com.feng.demo.javafeatures.java8.concurrent;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.StampedLock;
 
@@ -32,19 +33,13 @@ public class ConcurrentDemo
 			int firstValue, String secondKey, int secondValue, String thirdKey,
 			int thirdValue)
 	{
-		Map<String,Integer> map = new ConcurrentHashMap<String, Integer>();
+		ConcurrentHashMap<String,Integer> map = new ConcurrentHashMap<String, Integer>();
 		map.put(firstKey, firstValue);
 		map.put(secondKey, secondValue);
 		map.put(thirdKey, thirdValue);
-		Map<String,Integer> ret = new HashMap<String,Integer>();
-		map.forEach((k,v) -> {
-			if(k.startsWith("a"))
-			{
-				v++;
-				ret.put(k, v);
-			}
-
-		});
+		ConcurrentHashMap<String,Integer> ret = new ConcurrentHashMap<String,Integer>();
+		map.forEach(1L, (k, v) -> k.startsWith("a") ? k : null,
+				k -> ret.put(k, map.get(k).intValue()+1));
 		return ret;
 	}
 	public int[] getThreeValues(int initValue,int addValue,int addValueWhenFive)
@@ -57,7 +52,32 @@ public class ConcurrentDemo
 		return ret;
 		
 	}
+	private String readFileMock()
+	{
+		//mock read file operation
+		try
+		{
+			Thread.sleep(500);
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		return "Hello Java World";
+	}
 	
+	public String[] readAndSplitFile()
+	{
+		CompletableFuture<String[]> future = CompletableFuture.supplyAsync(() -> readFileMock()).thenApplyAsync(w -> w.split(" "));
+		String[] ret = null;
+		try
+		{
+			ret = future.get();
+		} catch (InterruptedException | ExecutionException e)
+		{
+			e.printStackTrace();
+		}
+		return ret;
+	}
 	private class LockDemo{
 		private int value;
 		private final StampedLock lock = new StampedLock();

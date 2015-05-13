@@ -50,5 +50,14 @@ public class ConcurrentDemoTest extends TestCase
 		assertEquals(4, ret[1]);
 		assertEquals(9, ret[2]);
 	}
+	
+	public void testReadAndSplitFile()
+	{
+		String[] ret = demo.readAndSplitFile();
+		assertEquals(3, ret.length);
+		assertEquals("Hello", ret[0]);
+		assertEquals("Java", ret[1]);
+		assertEquals("World", ret[2]);
+	}
 
 }
