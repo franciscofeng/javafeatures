@@ -1,12 +1,20 @@
 package com.feng.demo.javafeatures.java7.nio2;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.Optional;
+import java.util.Set;
 
 public class Nio2Demo
 {
@@ -33,17 +41,18 @@ public class Nio2Demo
 			return "";
 		}
 		
-		StringBuilder sb = new StringBuilder();
-		
-		try(BufferedReader reader = Files.newBufferedReader(file))
-		{
-			String line = "";
-			while((line = reader.readLine()) != null)
-			{
-				sb.append(line);
-			}
-		}
-		return sb.toString();
+//		StringBuilder sb = new StringBuilder();
+//		
+//		try(BufferedReader reader = Files.newBufferedReader(file))
+//		{
+//			String line = "";
+//			while((line = reader.readLine()) != null)
+//			{
+//				sb.append(line);
+//			}
+//		}
+//		return sb.toString();
+		return new String(Files.readAllBytes(file));
 		
 	}
 	
@@ -62,5 +71,49 @@ public class Nio2Demo
 		return "";
 	}
 	
+	public void copyFileTo(String from,String to) throws IOException
+	{
+		Path fromPath = Paths.get(from);
+		Path toPath = Paths.get(to);
+		Files.copy(fromPath, toPath, StandardCopyOption.REPLACE_EXISTING);
+	}
 	
+	public void addWritePermissionToAllUser(String file) throws IOException
+	{
+		Path path = Paths.get(file);
+		PosixFileAttributes attrs = Files.readAttributes(path, PosixFileAttributes.class);
+		Set<PosixFilePermission> permissions = attrs.permissions();
+		permissions.add(PosixFilePermission.OTHERS_WRITE);
+		Files.setPosixFilePermissions(path, permissions);
+	}
+	
+	public String watchDirectory(String dir) throws IOException, InterruptedException
+	{
+		WatchService watch = FileSystems.getDefault().newWatchService();
+		Path path = Paths.get(dir);
+		WatchKey key = path.register(watch, StandardWatchEventKinds.ENTRY_DELETE);
+		boolean run = true;
+		String ret = null;
+		
+		while(run)
+		{
+			key = watch.take();
+			for(WatchEvent<?> event:key.pollEvents())
+			{
+				if(event.kind() == StandardWatchEventKinds.ENTRY_DELETE)
+				{
+					ret = event.context().toString();
+					run = false;
+				}
+			}
+			key.reset();
+		}
+		return ret;
+	}
+	
+	public void removeFile(String file) throws IOException
+	{
+		Path path = Paths.get(file);
+		Files.delete(path);
+	}
 }
