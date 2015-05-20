@@ -1,6 +1,7 @@
 package com.feng.demo.javafeatures.java7.nio2;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -72,7 +73,7 @@ public class AioDemoTest extends TestCase
 		
 		try
 		{
-			Files.write(path, content.getBytes());
+			Files.write(path, content.getBytes(Charset.forName("UTF-8")));
 			read = demo.readFromFile(fileName);
 		} catch (IOException e)
 		{

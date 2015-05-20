@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class AioDemo
 {
@@ -40,9 +42,10 @@ public class AioDemo
 		Path path = Paths.get(file);
 		AsynchronousFileChannel afc = null;
 		StringBuilder sb = new StringBuilder();
+		ByteBuffer buffer = null;
 		try
 		{
-			ByteBuffer buffer = ByteBuffer.allocate(100_000);
+			buffer = ByteBuffer.allocate(100_000);
 			afc = AsynchronousFileChannel.open(path, StandardOpenOption.READ);
 			afc.read(buffer, 0, "test attachment",
 					new CompletionHandler<Integer, String>()
@@ -52,7 +55,7 @@ public class AioDemo
 						public void completed(Integer result, String attachment)
 						{
 							System.out.println(attachment);
-							sb.append(new String(buffer.array()));
+							
 						}
 
 						@Override
@@ -63,7 +66,7 @@ public class AioDemo
 					});
 			try
 			{
-				Thread.sleep(5000);
+				TimeUnit.SECONDS.sleep(2);
 			} catch (InterruptedException e)
 			{
 				e.printStackTrace();
@@ -74,6 +77,7 @@ public class AioDemo
 			afc.close();
 		}
 
+		sb.append(new String(buffer.array(),Charset.forName("UTF-8")).trim());
 		return sb.toString();
 	}
 }
